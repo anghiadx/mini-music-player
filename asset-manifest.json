@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/mini-music-player/static/css/main.ffd4e0a3.css",
+    "main.js": "/mini-music-player/static/js/main.8b7569ff.js",
+    "static/js/787.ded37e57.chunk.js": "/mini-music-player/static/js/787.ded37e57.chunk.js",
+    "static/media/macos.jpg": "/mini-music-player/static/media/macos.cbbbb7b2e1fb6bdbc680.jpg",
+    "static/media/music-thumb.png": "/mini-music-player/static/media/music-thumb.a819f183a84f28fa02b5.png",
+    "index.html": "/mini-music-player/index.html",
+    "main.ffd4e0a3.css.map": "/mini-music-player/static/css/main.ffd4e0a3.css.map",
+    "main.8b7569ff.js.map": "/mini-music-player/static/js/main.8b7569ff.js.map",
+    "787.ded37e57.chunk.js.map": "/mini-music-player/static/js/787.ded37e57.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ffd4e0a3.css",
+    "static/js/main.8b7569ff.js"
+  ]
+}
