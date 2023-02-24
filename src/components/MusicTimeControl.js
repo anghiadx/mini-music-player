@@ -36,6 +36,19 @@ function MusicTimeControl({ audio, currentSong }) {
 		};
 	}, [audio, handleTimeUpdate]);
 
+	// Function handle
+	const handleMouseDown = () => {
+		audio.removeEventListener("timeupdate", handleTimeUpdate);
+	};
+
+	const handleMouseUp = (e) => {
+		const percent = parseInt(e.target.value);
+		const currentTime = percentToTime(percent, totalTime);
+
+		audio.currentTime = currentTime;
+		audio.addEventListener("timeupdate", handleTimeUpdate);
+	};
+
 	return (
 		<div className="mt-[32px]">
 			<div className="relative h-[3px] bg-[#aaa]">
@@ -62,16 +75,10 @@ function MusicTimeControl({ audio, currentSong }) {
 						setPercent(percent);
 						setCurrentTime(currentTime);
 					}}
-					onMouseDown={() => {
-						audio.removeEventListener("timeupdate", handleTimeUpdate);
-					}}
-					onMouseUp={(e) => {
-						const percent = parseInt(e.target.value);
-						const currentTime = percentToTime(percent, totalTime);
-
-						audio.currentTime = currentTime;
-						audio.addEventListener("timeupdate", handleTimeUpdate);
-					}}
+					onMouseDown={handleMouseDown}
+					onMouseUp={handleMouseUp}
+					onTouchStart={handleMouseDown}
+					onTouchEnd={handleMouseUp}
 				/>
 			</div>
 			<p className="flex justify-between mt-[8px] text-[15px]">

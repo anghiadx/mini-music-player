@@ -35,7 +35,7 @@ function MusicItem({ index, currentIndex, song, handleClick }) {
 			</div>
 
 			{isActive && isPlaying && (
-				<div className="absolute right-0 inset-y-[-12px]">
+				<div className="absolute right-0 inset-y-[-12px] pointer-events-none">
 					<Lottie options={{ animationData: waveAnimate }} />
 				</div>
 			)}

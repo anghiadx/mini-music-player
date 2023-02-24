@@ -22,8 +22,10 @@ function App() {
 	useEffect(() => {
 		const fetchSongs = async () => {
 			try {
-				const result = await (await fetch("https://api.nghiane.cf/music-player/view/")).json();
-				setSongs(result.data);
+				const response = await (await fetch("https://api.nghiane.cf/music-player/view/")).json();
+				const result = response.data.sort(() => Math.random() - 0.5); // random list
+
+				setSongs(result);
 			} catch (e) {
 				console.log("Failed to fetch: ", e);
 			}
