@@ -38,7 +38,7 @@ function MusicTimeControl({ audio, currentSong }) {
 
 	return (
 		<div className="mt-[32px]">
-			<div className="relative h-[3px] bg-[#aaa] hover:[&>div>div]:scale-[1.5]">
+			<div className="relative h-[3px] bg-[#aaa]">
 				<div className="relative h-full w-[30%] bg-black" style={{ width: `${percent}%` }}>
 					<div
 						className="
@@ -54,7 +54,7 @@ function MusicTimeControl({ audio, currentSong }) {
 					min="0"
 					max="100"
 					step="1"
-					className="absolute inset-x-0 top-0 mx-[-2px] opacity-[0] translate-y-[-50%]"
+					className="absolute inset-x-0 top-0 mx-[-2px] opacity-0 translate-y-[-50%] cursor-pointer"
 					onChange={(e) => {
 						const percent = parseInt(e.target.value);
 						const currentTime = percentToTime(percent, totalTime);

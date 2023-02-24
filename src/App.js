@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch, faVolumeHigh, faVolumeLow } from "@fortawesome/free-solid-svg-icons";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import images from "./assets/images";
 import MusicControl from "./components/MusicControl";
 import MusicItem from "./components/MusicItem";
 import MusicTimeControl from "./components/MusicTimeControl";
+import MusicVolumeControl from "./components/MusicVolumeControl";
 
 function App() {
 	const [songs, setSongs] = useState([]);
@@ -31,7 +32,7 @@ function App() {
 	}, []);
 
 	return (
-		<div className="app min-h-screen bg-main-background bg-cover bg-center">
+		<div className="app min-h-screen bg-main-background bg-cover animate-bgMove">
 			<div className="fixed inset-0 m-auto w-[450px] h-fit">
 				<header className="p-[24px] bg-[rgba(255,255,255,0.7)] rounded-[8px]">
 					{/* Thumb and name of song */}
@@ -45,6 +46,7 @@ function App() {
 
 					{/* Time update */}
 					<MusicTimeControl audio={audioRef.current} currentSong={currentSong} />
+
 					{/* Play/Pause - Next - Previos */}
 					<MusicControl
 						songLength={songs.length}
@@ -53,15 +55,8 @@ function App() {
 						setIndex={setCurrentIndex}
 					/>
 
-					<div className="flex justify-between items-center">
-						<span>
-							<FontAwesomeIcon icon={faVolumeLow} />
-						</span>
-						<div className="grow mx-[24px] h-[3px] bg-black"></div>
-						<span>
-							<FontAwesomeIcon icon={faVolumeHigh} />
-						</span>
-					</div>
+					{/* Volume control */}
+					<MusicVolumeControl audio={audioRef.current} currentSong={currentSong} />
 				</header>
 
 				<section className="min-h-[350px] px-[24px] py-[12px] bg-[rgba(255,255,255,0.7)] rounded-[8px] mt-[8px]">
