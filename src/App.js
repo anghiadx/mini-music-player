@@ -22,7 +22,7 @@ function App() {
 	useEffect(() => {
 		const fetchSongs = async () => {
 			try {
-				const response = await (await fetch("https://api.nghiane.cf/music-player/view/")).json();
+				const response = await (await fetch("https://api.nghiane.online/music-player/view/")).json();
 				const result = response.data.sort(() => Math.random() - 0.5); // random list
 
 				setSongs(result);
