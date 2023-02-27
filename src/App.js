@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import images from "./assets/images";
 import MusicControl from "./components/MusicControl";
 import MusicItem from "./components/MusicItem";
 import MusicTimeControl from "./components/MusicTimeControl";
 import MusicVolumeControl from "./components/MusicVolumeControl";
+import Lottie from "react-lottie";
+import * as musicLoading from "./assets/effects/music-loading.json";
 
 function App() {
 	const [songs, setSongs] = useState([]);
@@ -16,7 +16,11 @@ function App() {
 
 	// Get current song and set path for audio
 	const currentSong = songs[currentIndex];
-	audioRef.current.src = currentSong ? currentSong.path : null;
+
+	if (currentSong) {
+		audioRef.current.src = currentSong.path;
+		document.title = currentSong.name;
+	}
 
 	// Call api to get songs
 	useEffect(() => {
@@ -34,16 +38,18 @@ function App() {
 	}, []);
 
 	return (
-		<div className="app min-h-screen bg-main-background bg-cover animate-bgMove">
-			<div className="fixed inset-0 m-auto w-[450px] h-fit">
-				<header className="p-[24px] bg-[rgba(255,255,255,0.7)] rounded-[8px]">
+		<div className="flex justify-center min-[466px]:items-center min-h-screen max-h-screen bg-main-background bg-cover animate-bgMove">
+			<div className="flex flex-col w-[450px] mx-[4px] my-[8px]">
+				<header className="shrink-0 relative p-[16px] min-[466px]:p-[24px] bg-[rgba(255,255,255,0.7)] rounded-[4px] min-[466px]:rounded-[8px]">
 					{/* Thumb and name of song */}
-					<div className="flex">
+					<div className="flex mr-[32px]">
 						<div
-							className="w-[80px] h-[80px] mr-[12px] rounded-[8px] bg-[#aaa] bg-cover"
+							className="shrink-0 w-[80px] h-[80px] mr-[12px] rounded-[8px] bg-[#aaa] bg-cover"
 							style={{ backgroundImage: `url('${currentSong?.imageURL || images.thumb}')` }}
 						></div>
-						<p className="mt-[8px] font-bold">{currentSong?.name || "Mini Music Player"}</p>
+						<p className="h-fit mt-[8px] line-clamp-2 font-bold">
+							{currentSong?.name || "Mini Music Player"}
+						</p>
 					</div>
 
 					{/* Time update */}
@@ -61,11 +67,11 @@ function App() {
 					<MusicVolumeControl audio={audioRef.current} currentSong={currentSong} />
 				</header>
 
-				<section className="min-h-[350px] px-[24px] py-[12px] bg-[rgba(255,255,255,0.7)] rounded-[8px] mt-[8px]">
+				<section className="grow flex flex-col px-[16px] min-[466px]:px-[24px] py-[12px] bg-[rgba(255,255,255,0.7)] rounded-[8px] mt-[4px] min-[466px]:mt-[8px] overflow-hidden">
 					<h3 className="font-bold text-[15px] italic">Play list</h3>
 
 					{/* Song list */}
-					<div className="relative h-[320px] mt-[8px] overflow-y-auto">
+					<div className="grow relative min-[466px]:h-[320px] mt-[8px] mr-[-4px] overflow-y-auto">
 						{songs.map((song, index) => {
 							return (
 								<MusicItem
@@ -81,8 +87,8 @@ function App() {
 						})}
 
 						{!songs.length && (
-							<span className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] text-[24px] leading-[0]">
-								<FontAwesomeIcon className="animate-spin" icon={faCircleNotch} />
+							<span className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] w-[124px] pointer-events-none">
+								<Lottie options={{ animationData: musicLoading }} />
 							</span>
 						)}
 					</div>

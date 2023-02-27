@@ -37,11 +37,22 @@ function MusicTimeControl({ audio, currentSong }) {
 	}, [audio, handleTimeUpdate]);
 
 	// Function handle
-	const handleMouseDown = () => {
+	const handleMouseDown = (e) => {
+		// Cancel action when there is no current song
+		if (!currentSong) {
+			e.preventDefault();
+			return;
+		}
 		audio.removeEventListener("timeupdate", handleTimeUpdate);
 	};
 
 	const handleMouseUp = (e) => {
+		// Cancel action when there is no current song
+		if (!currentSong) {
+			e.preventDefault();
+			return;
+		}
+
 		const percent = parseInt(e.target.value);
 		const currentTime = percentToTime(percent, totalTime);
 
