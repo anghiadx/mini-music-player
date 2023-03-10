@@ -62,7 +62,7 @@ function MusicTimeControl({ audio, currentSong }) {
 
 	return (
 		<div className="mt-[32px]">
-			<div className="relative h-[3px] bg-[#aaa]">
+			<div className="relative h-[3px] bg-[#dedede]">
 				<div className="relative h-full w-[30%] bg-black" style={{ width: `${percent}%` }}>
 					<div
 						className="

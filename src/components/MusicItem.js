@@ -1,7 +1,8 @@
 import { useEffect, useRef, useContext } from "react";
+import Lottie from "lottie-react";
 import { AudioContextKey } from "../contexts/AudioContext";
-import Lottie from "react-lottie";
-import * as waveAnimate from "../assets/effects/wave.json";
+import * as waveAnimate from "../assets/effects/song-wave.json";
+import * as cdAnimate from "../assets/effects/cd-animation.json";
 
 function MusicItem({ index, currentIndex, song, handleClick }) {
 	const { playingState } = useContext(AudioContextKey);
@@ -29,15 +30,20 @@ function MusicItem({ index, currentIndex, song, handleClick }) {
 					`}
 			onClick={handleClick}
 		>
-			<img src={song.imageURL} alt="" className="w-[50px] h-[50px] rounded-full" />
+			<div
+				className="shrink-0 flex items-center justify-center w-[50px] h-[50px] rounded-full overflow-hidden bg-cover bg-center"
+				style={{ backgroundImage: `url('${song.imageURL}')` }}
+			>
+				{isActive && isPlaying && <Lottie animationData={cdAnimate} />}
+			</div>
 			<div className="grow ml-[12px] mr-[44px]">
 				<h3 className="font-[700] text-[15px] line-clamp-1">{song.name}</h3>
 				<p className="text-[13px] line-clamp-1">{song.singer}</p>
 			</div>
 
 			{isActive && isPlaying && (
-				<div className="absolute right-[-12px] inset-y-[-12px] pointer-events-none">
-					<Lottie options={{ animationData: waveAnimate }} />
+				<div className="flex items-center w-[200px] absolute right-[-70px] pointer-events-none">
+					<Lottie animationData={waveAnimate} />
 				</div>
 			)}
 		</div>

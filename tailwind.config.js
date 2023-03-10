@@ -15,6 +15,9 @@ module.exports = {
 			animation: {
 				bgMove: "move 110s linear infinite",
 			},
+			transitionProperty: {
+				"bg-image": "background-image",
+			},
 		},
 	},
 	plugins: [require("@tailwindcss/line-clamp")],

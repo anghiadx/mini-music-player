@@ -1,6 +1,10 @@
-import { useState, useEffect, useContext, memo } from "react";
+import { useState, useEffect, useRef, useContext, memo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBackward, faForward, faPause, faPlay, faRandom, faRepeat } from "@fortawesome/free-solid-svg-icons";
+import { faRandom, faRepeat } from "@fortawesome/free-solid-svg-icons";
+import Lottie from "lottie-react";
+import * as playAnimation from "../assets/effects/play-animation.json";
+import * as prevAnimation from "../assets/effects/prev-animation.json";
+import * as nextAnimation from "../assets/effects/next-animation.json";
 import { AudioContextKey } from "../contexts/AudioContext";
 import { useLocalStorage } from "../hooks";
 
@@ -11,6 +15,11 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 	const [isPlaying, setIsPlaying] = playingState;
 	const [isLoop, setIsLoop] = useState(getStorage("isLoop") || false);
 	const [isRandom, setIsRandom] = useState(getStorage("isRandom") || false);
+
+	// Ref
+	const playBtnRef = useRef();
+	const prevBtnRef = useRef();
+	const nextBtnRef = useRef();
 
 	// Handle Play / Pause audio by state
 	useEffect(() => {
@@ -23,10 +32,16 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 	useEffect(() => {
 		const handlePause = () => {
 			const isEnded = audio.currentTime === audio.duration;
-			!isEnded && setIsPlaying(false);
+			if (!isEnded && isPlaying) {
+				setIsPlaying(false);
+				changePlayAnimation(false);
+			}
 		};
 		const handlePlay = () => {
-			!isPlaying && setIsPlaying(true);
+			if (!isPlaying) {
+				setIsPlaying(true);
+				changePlayAnimation(true);
+			}
 		};
 		audio.addEventListener("pause", handlePause);
 		audio.addEventListener("play", handlePlay);
@@ -50,6 +65,13 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isLoop, isRandom, audio, songLength]);
+
+	// Set default animation speed
+	useEffect(() => {
+		playBtnRef.current.setSpeed(2);
+		prevBtnRef.current.setSpeed(1.5);
+		nextBtnRef.current.setSpeed(1.5);
+	}, []);
 
 	const handleRandomSong = () => {
 		setIndex((prev) => {
@@ -86,35 +108,54 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 		});
 	};
 
+	const changePlayAnimation = (isPlaying) => {
+		const segment = isPlaying ? [0, 33] : [33, 67];
+		playBtnRef.current.playSegments(segment, true);
+	};
+
 	return (
 		<div className="flex justify-between max-w-[70%] mx-auto mt-[-8px] mb-[12px]">
+			{/* Prev btn */}
 			<button
-				className="flex justify-center items-center w-[45px] h-[45px] pr-[5px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
-				onClick={currentSong && handlePrevSong}
-			>
-				<FontAwesomeIcon icon={faBackward} />
-			</button>
-			<button
-				className="flex justify-center items-center w-[45px] h-[45px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
+				className="flex justify-center items-center w-[50px] h-[50px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
 				onClick={() => {
-					currentSong && setIsPlaying(!isPlaying);
+					if (currentSong) {
+						handlePrevSong();
+						prevBtnRef.current.goToAndPlay(5, true);
+					}
 				}}
 			>
-				{isPlaying ? (
-					<FontAwesomeIcon icon={faPause} />
-				) : (
-					<FontAwesomeIcon className="pl-[5px]" icon={faPlay} />
-				)}
+				<Lottie lottieRef={prevBtnRef} animationData={prevAnimation} autoplay={false} loop={false} />
 			</button>
+
+			{/* Play / Pause btn */}
 			<button
-				className="flex justify-center items-center w-[45px] h-[45px] pl-[5px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
-				onClick={currentSong && handleNextSong}
+				className="flex justify-center items-center w-[50px] h-[50px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
+				onClick={() => {
+					if (currentSong) {
+						setIsPlaying(!isPlaying);
+						changePlayAnimation(!isPlaying);
+					}
+				}}
 			>
-				<FontAwesomeIcon icon={faForward} />
+				<Lottie lottieRef={playBtnRef} animationData={playAnimation} autoplay={false} loop={false} />
+			</button>
+
+			{/* Next btn */}
+			<button
+				className="flex justify-center items-center w-[50px] h-[50px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
+				onClick={() => {
+					if (currentSong) {
+						handleNextSong();
+						nextBtnRef.current.goToAndPlay(5, true);
+					}
+				}}
+			>
+				<Lottie lottieRef={nextBtnRef} animationData={nextAnimation} autoplay={false} loop={false} />
 			</button>
 
 			{/* Repeat and Random btn */}
-			<div className="absolute top-[16px] right-[12px] min-[466px]:top-[24px] min-[466px]:right-[20px] flex flex-col justify-around h-[80px] text-[#777]">
+			<div className="absolute top-0 right-[-6px] flex flex-col justify-around h-[80px] text-[#777]">
 				<button
 					className={`p-[6px] text-[18px] ${isLoop && "text-black"}`}
 					onClick={() => {
