@@ -1,20 +1,26 @@
-import { useState, useEffect, useRef, useContext, memo } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRandom, faRepeat } from "@fortawesome/free-solid-svg-icons";
 import Lottie from "lottie-react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { setIsPlaying } from "../redux/slices/audioSlice";
 import * as playAnimation from "../assets/effects/play-animation.json";
 import * as prevAnimation from "../assets/effects/prev-animation.json";
 import * as nextAnimation from "../assets/effects/next-animation.json";
-import { AudioContextKey } from "../contexts/AudioContext";
 import { useLocalStorage } from "../hooks";
+import MusicSetting from "./MusicSetting";
 
 function MusicControl({ songLength, currentSong, audio, setIndex }) {
-	const { playingState } = useContext(AudioContextKey);
 	const { getStorage, setStorage } = useLocalStorage();
 
-	const [isPlaying, setIsPlaying] = playingState;
+	// State
 	const [isLoop, setIsLoop] = useState(getStorage("isLoop") || false);
 	const [isRandom, setIsRandom] = useState(getStorage("isRandom") || false);
+
+	// Redux
+	const dispatch = useDispatch();
+	const { isPlaying } = useSelector((state) => state.audio);
 
 	// Ref
 	const playBtnRef = useRef();
@@ -26,20 +32,20 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 		if (currentSong) {
 			isPlaying ? audio.play() : audio.pause();
 		}
-	}, [isPlaying, audio, currentSong]);
+	}, [isPlaying, audio, currentSong, songLength]);
 
 	// Handle audio pause / play event
 	useEffect(() => {
 		const handlePause = () => {
 			const isEnded = audio.currentTime === audio.duration;
 			if (!isEnded && isPlaying) {
-				setIsPlaying(false);
+				dispatch(setIsPlaying(false));
 				changePlayAnimation(false);
 			}
 		};
 		const handlePlay = () => {
 			if (!isPlaying) {
-				setIsPlaying(true);
+				dispatch(setIsPlaying(true));
 				changePlayAnimation(true);
 			}
 		};
@@ -117,7 +123,7 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 		<div className="flex justify-between max-w-[70%] mx-auto mt-[-8px] mb-[12px]">
 			{/* Prev btn */}
 			<button
-				className="flex justify-center items-center w-[50px] h-[50px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
+				className="flex justify-center items-center w-[48px] h-[48px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
 				onClick={() => {
 					if (currentSong) {
 						handlePrevSong();
@@ -130,10 +136,10 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 
 			{/* Play / Pause btn */}
 			<button
-				className="flex justify-center items-center w-[50px] h-[50px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
+				className="flex justify-center items-center w-[48px] h-[48px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
 				onClick={() => {
 					if (currentSong) {
-						setIsPlaying(!isPlaying);
+						dispatch(setIsPlaying(!isPlaying));
 						changePlayAnimation(!isPlaying);
 					}
 				}}
@@ -143,7 +149,7 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 
 			{/* Next btn */}
 			<button
-				className="flex justify-center items-center w-[50px] h-[50px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
+				className="flex justify-center items-center w-[48px] h-[48px] rounded-full text-[25px] hover:bg-[#2db8ff33] transition-colors duration-150"
 				onClick={() => {
 					if (currentSong) {
 						handleNextSong();
@@ -155,9 +161,9 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 			</button>
 
 			{/* Repeat and Random btn */}
-			<div className="absolute top-0 right-[-6px] flex flex-col justify-around h-[80px] text-[#777]">
+			<div className="absolute top-[-5px] right-[-6px] flex flex-col justify-around h-fit text-[#777]">
 				<button
-					className={`p-[6px] text-[18px] ${isLoop && "text-black"}`}
+					className={`p-[4px] text-[18px] ${isLoop && "text-black"}`}
 					onClick={() => {
 						setIsLoop(!isLoop);
 						setStorage("isLoop", !isLoop);
@@ -175,6 +181,8 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 				>
 					<FontAwesomeIcon icon={faRandom} />
 				</button>
+
+				<MusicSetting className={`p-[3px] w-[30px]`} />
 			</div>
 		</div>
 	);

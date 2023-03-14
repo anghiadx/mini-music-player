@@ -1,12 +1,12 @@
-import { useEffect, useRef, useContext } from "react";
+import { useEffect, useRef } from "react";
 import Lottie from "lottie-react";
-import { AudioContextKey } from "../contexts/AudioContext";
+import { useSelector } from "react-redux";
+
 import * as waveAnimate from "../assets/effects/song-wave.json";
 import * as cdAnimate from "../assets/effects/cd-animation.json";
 
 function MusicItem({ index, currentIndex, song, handleClick }) {
-	const { playingState } = useContext(AudioContextKey);
-	const [isPlaying] = playingState;
+	const { isPlaying } = useSelector((state) => state.audio);
 
 	const itemRef = useRef();
 

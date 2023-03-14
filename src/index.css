@@ -21,3 +21,38 @@
 		border-radius: 4px;
 	}
 }
+
+@layer components {
+	/* Switch Style */
+	.switch-checkbox:checked + .switch-label {
+		background-color: #00c070;
+	}
+	.switch-checkbox:checked + .switch-label::after {
+		left: 100%;
+		transform: translateX(-100%);
+		background-color: white;
+	}
+
+	.switch-label {
+		position: relative;
+		display: flex;
+		align-items: center;
+		width: 44px;
+		height: 22px;
+		border-radius: 9999px;
+		border: 1px solid #777;
+		transition: all 0.3s;
+		cursor: pointer;
+	}
+	.switch-label::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		transform: translateX(0px);
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background-color: black;
+		transition: inherit;
+	}
+}
