@@ -3,15 +3,16 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { setAllSongs } from "./redux/slices/songSlice";
 import images from "./assets/images";
-import MusicControl from "./components/MusicControl";
-import MusicItem from "./components/MusicItem";
-import MusicTimeControl from "./components/MusicTimeControl";
-import MusicVolumeControl from "./components/MusicVolumeControl";
+import MusicControl from "./components/Musics/MusicControl";
+import MusicItem from "./components/Musics/MusicItem";
+import MusicTimeControl from "./components/Musics/MusicTimeControl";
+import MusicVolumeControl from "./components/Musics/MusicVolumeControl";
 import Lottie from "lottie-react";
 import * as loadingAnimate from "./assets/effects/loading-animation.json";
 import * as nothingAnimate from "./assets/effects/nothing-animation.json";
 import configs from "./configs";
 import { useLocalStorage } from "./hooks";
+import MusicTimer from "./components/Musics/MusicTimer";
 
 function App() {
 	// Get local storage method
@@ -47,7 +48,7 @@ function App() {
 	useMemo(() => {
 		if (currentSong) {
 			audioRef.current.src = currentSong.path;
-			document.title = currentSong.name;
+			document.title = currentSong.name + " - Mini Music Player";
 		} else {
 			setCurrentIndex(0);
 		}
@@ -74,7 +75,7 @@ function App() {
 
 	return (
 		<div
-			className="flex justify-center min-[466px]:items-center min-h-screen max-h-screen bg-main-background bg-cover animate-bgMove transition-bg-image duration-700"
+			className="flex justify-center min-[466px]:items-center min-h-screen max-h-screen bg-[#71c9e2] bg-main-background bg-cover animate-bgMove transition-bg-image duration-700"
 			style={{ backgroundImage: `url(${backgroundUrl})` }}
 		>
 			{/* <div className="fixed inset-0 overflow-hidden z-[9999] pointer-events-none">
@@ -116,7 +117,11 @@ function App() {
 						className="absolute inset-0 bg-cover bg-center opacity-[0.16] blur-md transition-bg-image duration-700"
 						style={{ backgroundImage: `url('${currentSong?.imageURL || images.transparent}')` }}
 					></div>
-					<h3 className="relative font-bold text-[15px] italic">Play list</h3>
+
+					<div className="shrink-0 relative flex justify-between h-[25px] overflow-hidden">
+						<h3 className="font-bold text-[15px] italic">Play list</h3>
+						<MusicTimer />
+					</div>
 
 					{/* Song list */}
 					<div className="grow relative min-[466px]:h-[320px] mt-[8px] mr-[-4px] overflow-y-auto">

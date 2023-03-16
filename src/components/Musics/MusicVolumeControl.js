@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeHigh, faVolumeLow } from "@fortawesome/free-solid-svg-icons";
-import { useLocalStorage } from "../hooks";
+import { useLocalStorage } from "../../hooks";
 
 function MusicVolumeControl({ audio, currentSong }) {
 	const { getStorage, setStorage } = useLocalStorage();
@@ -34,7 +34,7 @@ function MusicVolumeControl({ audio, currentSong }) {
 					max="100"
 					step="1"
 					className="absolute top-0 left-0 w-[calc(100%+4px)] ml-[-2px] translate-y-[-45%] opacity-0 cursor-pointer"
-					onChange={(e) => {
+					onInput={(e) => {
 						const value = parseInt(e.target.value);
 						setVolumePercent(value);
 

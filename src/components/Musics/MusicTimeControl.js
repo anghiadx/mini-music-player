@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { timeToPercent, percentToTime, timeFormat } from "../funcHandler";
+import { timeToPercent, percentToTime, timeFormat } from "../../funcHandler";
 
 function MusicTimeControl({ audio, currentSong }) {
 	const [currentTime, setCurrentTime] = useState(0);
@@ -40,7 +40,6 @@ function MusicTimeControl({ audio, currentSong }) {
 	const handleMouseDown = (e) => {
 		// Cancel action when there is no current song
 		if (!currentSong) {
-			e.preventDefault();
 			return;
 		}
 		audio.removeEventListener("timeupdate", handleTimeUpdate);
@@ -49,7 +48,6 @@ function MusicTimeControl({ audio, currentSong }) {
 	const handleMouseUp = (e) => {
 		// Cancel action when there is no current song
 		if (!currentSong) {
-			e.preventDefault();
 			return;
 		}
 
@@ -80,6 +78,10 @@ function MusicTimeControl({ audio, currentSong }) {
 					step="1"
 					className="absolute inset-x-0 top-0 mx-[-2px] opacity-0 translate-y-[-50%] cursor-pointer"
 					onChange={(e) => {
+						if (!currentSong) {
+							return;
+						}
+
 						const percent = parseInt(e.target.value);
 						const currentTime = percentToTime(percent, totalTime);
 
@@ -92,6 +94,7 @@ function MusicTimeControl({ audio, currentSong }) {
 					onTouchEnd={handleMouseUp}
 				/>
 			</div>
+			{/* Show time */}
 			<p className="flex justify-between mt-[8px] text-[15px]">
 				<span>{timeFormat(currentTime)}</span>
 				<span>{timeFormat(totalTime)}</span>

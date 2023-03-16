@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import Lottie from "lottie-react";
-import * as settingAnimation from "../assets/effects/setting-animation.json";
+import * as settingAnimation from "../../assets/effects/setting-animation.json";
 import { memo } from "react";
-import { useModal } from "../hooks";
-import SettingModal from "./modals/SettingModal";
+import { useModal } from "../../hooks";
+import SettingModal from "../modals/SettingModal";
 
 function MusicSetting({ className }) {
 	const iconRef = useRef();

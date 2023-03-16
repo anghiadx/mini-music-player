@@ -37,7 +37,7 @@ function SongItem({ id, data, index, newHideList }) {
 
 	return (
 		<div
-			title={hide ? "Hiện bài này" : "Ẩn bài này"}
+			title={`${hide ? "Hiện" : "Ẩn"}: ${data.name}`}
 			className="flex items-center border mb-[8px] cursor-pointer hover:shadow-style-1 hover:bg-[#fafafa]"
 			onClick={() => setHide(!hide)}
 		>

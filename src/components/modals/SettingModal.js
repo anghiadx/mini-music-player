@@ -29,13 +29,16 @@ function SettingModal({ closeModal }) {
 
 	return (
 		<div
-			className={`fixed inset-0 flex justify-center bg-[rgba(0,0,0,0.3)] text-[15px] ${
+			className={`fixed inset-0 flex justify-center text-[15px] bg-[rgba(0,0,0,0.3)] ${
 				isClose ? "animate-fade-out" : "animate-fade-in"
 			}`}
 			onAnimationEnd={() => {
 				isClose && closeModal();
 			}}
 		>
+			{/* Overlay */}
+			<div className="absolute inset-0 cursor-pointer blur-md" onClick={handleCloseModal}></div>
+
 			{/* MAIN MODAL */}
 			<div
 				className={`flex flex-col relative p-[16px] w-full max-w-[600px] h-[calc(100%-4px)] max-h-[650px] mx-[4px] bg-white rounded-b-[4px] ${
@@ -75,7 +78,7 @@ function SettingModal({ closeModal }) {
 
 				<footer className="text-center">
 					<button
-						className="w-[200px] px-[12px] py-[8px] bg-black text-white font-bold rounded-[2px] hover:bg-[#3e3e3e]"
+						className="w-[200px] px-[12px] py-[8px] bg-black text-white font-bold rounded-[2px] border hover:bg-[#3e3e3e]"
 						onClick={handleCloseModal}
 					>
 						Đóng

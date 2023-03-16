@@ -20,12 +20,23 @@
 		background-color: rgba(0, 0, 0, 0.2);
 		border-radius: 4px;
 	}
+
+	.overflow-overlay {
+		overflow: overlay;
+	}
+	.overflow-x-overlay {
+		overflow-x: overlay;
+	}
+	.overflow-y-overlay {
+		overflow-y: overlay;
+	}
 }
 
 @layer components {
 	/* Switch Style */
 	.switch-checkbox:checked + .switch-label {
 		background-color: #00c070;
+		border-color: #00c070;
 	}
 	.switch-checkbox:checked + .switch-label::after {
 		left: 100%;
@@ -41,7 +52,7 @@
 		height: 22px;
 		border-radius: 9999px;
 		border: 1px solid #777;
-		transition: all 0.3s;
+		transition: all 0.33s;
 		cursor: pointer;
 	}
 	.switch-label::after {
@@ -54,5 +65,26 @@
 		border-radius: 50%;
 		background-color: black;
 		transition: inherit;
+	}
+
+	/* Timer line style */
+	.timer-line {
+		position: relative;
+	}
+	.timer-line::before,
+	.timer-line::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 2.1px;
+		height: 12px;
+		background-color: black;
+		border-radius: 2px;
+	}
+	.timer-line::after {
+		left: initial;
+		right: 0;
 	}
 }

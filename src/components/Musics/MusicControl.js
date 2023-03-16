@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef, memo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRandom, faRepeat } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faRandom } from "@fortawesome/free-solid-svg-icons";
 import Lottie from "lottie-react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { setIsPlaying } from "../redux/slices/audioSlice";
-import * as playAnimation from "../assets/effects/play-animation.json";
-import * as prevAnimation from "../assets/effects/prev-animation.json";
-import * as nextAnimation from "../assets/effects/next-animation.json";
-import { useLocalStorage } from "../hooks";
+import { setIsPlaying } from "../../redux/slices/audioSlice";
+import * as playAnimation from "../../assets/effects/play-animation.json";
+import * as prevAnimation from "../../assets/effects/prev-animation.json";
+import * as nextAnimation from "../../assets/effects/next-animation.json";
+import { useLocalStorage } from "../../hooks";
 import MusicSetting from "./MusicSetting";
 
 function MusicControl({ songLength, currentSong, audio, setIndex }) {
@@ -40,13 +40,11 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 			const isEnded = audio.currentTime === audio.duration;
 			if (!isEnded && isPlaying) {
 				dispatch(setIsPlaying(false));
-				changePlayAnimation(false);
 			}
 		};
 		const handlePlay = () => {
 			if (!isPlaying) {
 				dispatch(setIsPlaying(true));
-				changePlayAnimation(true);
 			}
 		};
 		audio.addEventListener("pause", handlePause);
@@ -56,6 +54,16 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 			audio.removeEventListener("pause", handlePause);
 			audio.removeEventListener("play", handlePlay);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isPlaying]);
+
+	// Change animation when the song pause or play
+	useEffect(() => {
+		if (!currentSong) {
+			return;
+		}
+		isPlaying ? changePlayAnimation(true) : changePlayAnimation(false);
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isPlaying]);
 
@@ -140,7 +148,6 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 				onClick={() => {
 					if (currentSong) {
 						dispatch(setIsPlaying(!isPlaying));
-						changePlayAnimation(!isPlaying);
 					}
 				}}
 			>
@@ -161,19 +168,19 @@ function MusicControl({ songLength, currentSong, audio, setIndex }) {
 			</button>
 
 			{/* Repeat and Random btn */}
-			<div className="absolute top-[-5px] right-[-6px] flex flex-col justify-around h-fit text-[#777]">
+			<div className="absolute top-[-5px] right-[-6px] flex flex-col justify-around h-fit text-[#707070] text-[18.5px]">
 				<button
-					className={`p-[4px] text-[18px] ${isLoop && "text-black"}`}
+					className={`p-[4px] ${isLoop && "text-black"}`}
 					onClick={() => {
 						setIsLoop(!isLoop);
 						setStorage("isLoop", !isLoop);
 					}}
 				>
-					<FontAwesomeIcon icon={faRepeat} />
+					<FontAwesomeIcon icon={faArrowsRotate} />
 				</button>
 
 				<button
-					className={`p-[4px] text-[18px] ${isRandom && "text-black"}`}
+					className={`p-[4px] ${isRandom && "text-black"}`}
 					onClick={() => {
 						setIsRandom(!isRandom);
 						setStorage("isRandom", !isRandom);
