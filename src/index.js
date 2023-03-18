@@ -14,7 +14,7 @@ root.render(
 );
 
 // Hello World
-console.log("%c<Mini Music Player - ANGHIADX />", "font-weight: bold; color: red; font-size: 15px");
+console.log("%c<Mini Music Player - ANGHIADX />", "font-weight: bold; color: red; font-size: 14px");
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

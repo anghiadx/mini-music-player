@@ -38,7 +38,7 @@ function Timer() {
 			{isRunning ? (
 				<div className="animate-scale-in">
 					<div className="animate-pulse mb-[12px]">
-						<div className="w-[110px] mx-auto">
+						<div className="w-[94px] mx-auto">
 							<Lottie animationData={hourglassAnimate} />
 						</div>
 						<p className="mt-[8px] font-bold text-center text-[brown]">Hẹn giờ đang chạy!</p>

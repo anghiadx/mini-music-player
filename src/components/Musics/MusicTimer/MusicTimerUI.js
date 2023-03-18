@@ -3,14 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 
 function MusicTimerUi({ expiryTimestamp, onExpire }) {
-	const { seconds, minutes } = useTimer({
+	const { seconds, minutes, isRunning } = useTimer({
 		expiryTimestamp,
 		autoStart: true,
-		onExpire,
 	});
 
 	return (
-		<div className="flex items-end mt-[-2px] text-[#444]">
+		<div
+			className={`flex items-end mt-[-2px] text-[#444] ${!isRunning && "animate-scale-out"}`}
+			onAnimationEnd={onExpire}
+		>
 			<span className="text-[18px]">
 				<FontAwesomeIcon icon={faClock} />
 			</span>

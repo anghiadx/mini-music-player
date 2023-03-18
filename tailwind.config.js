@@ -37,6 +37,15 @@ module.exports = {
 						opacity: 1,
 					},
 				},
+				"scale-out": {
+					"20%": {
+						transform: "scale(1.15)",
+					},
+					"100%": {
+						transform: "scale(0.3)",
+						opacity: 0,
+					},
+				},
 			},
 			animation: {
 				bgMove: "bgMove 110s linear infinite",
@@ -45,6 +54,7 @@ module.exports = {
 				"slide-in": "slide-in 0.5s",
 				"slide-out": "slide-out 0.8s forwards",
 				"scale-in": "scale-in 0.3s",
+				"scale-out": "scale-out 0.6s forwards",
 			},
 			transitionProperty: {
 				"bg-image": "background-image",
@@ -52,6 +62,8 @@ module.exports = {
 			boxShadow: {
 				"style-1": "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
 				"style-2": "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+				"style-3":
+					"rgba(0, 0, 0, 0.15) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.2) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
 			},
 		},
 	},

@@ -75,7 +75,7 @@ function App() {
 
 	return (
 		<div
-			className="flex justify-center min-[466px]:items-center min-h-screen max-h-screen bg-[#71c9e2] bg-main-background bg-cover animate-bgMove transition-bg-image duration-700"
+			className="flex justify-center min-[466px]:items-center min-h-screen max-h-screen bg-main-background bg-cover animate-bgMove transition-bg-image duration-700"
 			style={{ backgroundImage: `url(${backgroundUrl})` }}
 		>
 			{/* <div className="fixed inset-0 overflow-hidden z-[9999] pointer-events-none">
