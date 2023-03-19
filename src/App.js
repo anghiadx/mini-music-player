@@ -9,7 +9,6 @@ import MusicTimeControl from "./components/Musics/MusicTimeControl";
 import MusicVolumeControl from "./components/Musics/MusicVolumeControl";
 import Lottie from "lottie-react";
 import * as loadingAnimate from "./assets/effects/loading-animation.json";
-import * as nothingAnimate from "./assets/effects/nothing-animation.json";
 import configs from "./configs";
 import { useLocalStorage } from "./hooks";
 import MusicTimer from "./components/Musics/MusicTimer";
@@ -143,13 +142,6 @@ function App() {
 						{!allSongs.length && (
 							<span className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] w-[124px] pointer-events-none">
 								<Lottie animationData={loadingAnimate} />
-							</span>
-						)}
-
-						{/* Show animation when song list is empty */}
-						{!!allSongs.length && !currentList.length && (
-							<span className="absolute w-[250px] top-0 left-1/2 translate-x-[-50%]">
-								<Lottie animationData={nothingAnimate} />
 							</span>
 						)}
 					</div>

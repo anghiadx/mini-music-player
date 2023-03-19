@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Lottie from "lottie-react";
 import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 import { setHideList } from "../../../redux/slices/songSlice";
 import * as applyAnimate from "../../../assets/effects/apply-animation.json";
@@ -36,6 +37,37 @@ function Song() {
 		applyBtnRef.current.goToAndStop(149, true);
 	}, []);
 
+	const handleCancel = () => {
+		setNewHideList([...hideList]);
+		cancelBtnRef.current.goToAndPlay(0, true);
+
+		// Show toast
+		toast.info("Đã hủy bỏ các thay đổi!");
+	};
+
+	const handleApply = () => {
+		// Check if current playlist is less than 2 then don't hide and show notifications
+		const songIds = allSongs.map((song) => +song.id);
+
+		const totalHideIds = newHideList.filter((hideId) => {
+			return songIds.includes(hideId);
+		});
+
+		const currentSongLength = songIds.length - totalHideIds.length;
+		if (currentSongLength <= 1) {
+			toast.error("Danh sách phát không thể có ít hơn 2 bài hát!!");
+			return;
+		}
+
+		// If the conditions are met, update the changes
+		const action = setHideList([...newHideList]);
+		dispatch(action);
+		applyBtnRef.current.goToAndPlay(0, true);
+
+		// Show toast
+		toast.success("Đã áp dụng các thay đổi!");
+	};
+
 	return (
 		<div className="flex flex-col px-[12px] py-[8px]">
 			<header className="pb-[8px]">
@@ -48,7 +80,14 @@ function Song() {
 				{filteredSongs.length ? (
 					filteredSongs.map((song, index) => {
 						return (
-							<SongItem key={index} id={song.id} data={song} index={index} newHideList={newHideList} />
+							<SongItem
+								key={index}
+								id={song.id}
+								data={song}
+								index={index}
+								newHideList={newHideList}
+								songLength={allSongs.length}
+							/>
 						);
 					})
 				) : (
@@ -61,27 +100,12 @@ function Song() {
 
 			<footer className="flex justify-center items-center] my-[-8px] pt-[8px]">
 				{/* Cancel btn */}
-				<button
-					title="Hủy bỏ"
-					className="w-[50px]"
-					onClick={() => {
-						setNewHideList([...hideList]);
-						cancelBtnRef.current.goToAndPlay(0, true);
-					}}
-				>
+				<button title="Hủy bỏ" className="w-[50px]" onClick={handleCancel}>
 					<Lottie lottieRef={cancelBtnRef} animationData={cancelAnimate} loop={false} autoplay={false} />
 				</button>
 
 				{/* Apply btn */}
-				<button
-					title="Áp dụng"
-					className="w-[50px] px-[6px] ml-[50px]"
-					onClick={() => {
-						const action = setHideList([...newHideList]);
-						dispatch(action);
-						applyBtnRef.current.goToAndPlay(0, true);
-					}}
-				>
+				<button title="Áp dụng" className="w-[50px] px-[6px] ml-[50px]" onClick={handleApply}>
 					<Lottie lottieRef={applyBtnRef} animationData={applyAnimate} loop={false} autoplay={false} />
 				</button>
 			</footer>

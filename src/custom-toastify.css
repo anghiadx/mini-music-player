@@ -1,0 +1,11 @@
+.Toastify__toast {
+	margin-bottom: 8px;
+	font-size: 14px;
+}
+
+@media only screen and (max-width: 480px) {
+	.Toastify__toast {
+		min-height: 56px;
+		margin-bottom: 2px;
+	}
+}

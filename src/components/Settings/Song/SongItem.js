@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import Lottie from "lottie-react";
+
 import * as eyeAnimate from "../../../assets/effects/eye-animation.json";
 
-function SongItem({ id, data, index, newHideList }) {
+function SongItem({ id, data, index, newHideList, songLength }) {
 	const isHide = newHideList.includes(+id);
 
 	const [hide, setHide] = useState(isHide);
@@ -35,11 +36,15 @@ function SongItem({ id, data, index, newHideList }) {
 		iconRef.current.setSpeed(4.5);
 	}, []);
 
+	const handleToggleHide = () => {
+		setHide(!hide);
+	};
+
 	return (
 		<div
 			title={`${hide ? "Hiện" : "Ẩn"}: ${data.name}`}
 			className="flex items-center border mb-[8px] cursor-pointer hover:shadow-style-1 hover:bg-[#fafafa]"
-			onClick={() => setHide(!hide)}
+			onClick={handleToggleHide}
 		>
 			<div className="shrink-0 w-[30px] text-center">
 				<Lottie lottieRef={iconRef} animationData={eyeAnimate} loop={false} autoPlay={false} />
