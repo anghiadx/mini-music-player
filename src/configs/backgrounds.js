@@ -33,7 +33,7 @@ const backgrounds = [
 	},
 	{
 		id: 6,
-		name: "Tháng 12",
+		name: "Mùa Cô Đơn",
 		previewUrl: images.thang12Preview,
 		url: images.thang12,
 	},

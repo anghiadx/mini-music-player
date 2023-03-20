@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import Lottie from "lottie-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import * as searchAnimate from "../../../assets/effects/search-animation.json";
 import { useDebounce } from "../../../hooks";
 
@@ -21,6 +24,11 @@ function Search({ setKeyword, newHideList }) {
 
 	// Ref
 	const inputRef = useRef();
+
+	const handleClearInput = () => {
+		setSearchValue("");
+		inputRef.current.focus();
+	};
 
 	return (
 		<form
@@ -52,6 +60,15 @@ function Search({ setKeyword, newHideList }) {
 				onFocus={() => setIsFocus(true)}
 				onBlur={() => setIsFocus(false)}
 			/>
+			{/* Clear btn */}
+			{searchValue && (
+				<button
+					className="shrink-0 flex justify-center items-center w-[25px] text-[15px] text-[#777] animate-fade-in"
+					onClick={handleClearInput}
+				>
+					<FontAwesomeIcon icon={faCircleXmark} />
+				</button>
+			)}
 		</form>
 	);
 }

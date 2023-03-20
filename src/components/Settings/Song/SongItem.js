@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import Lottie from "lottie-react";
 
 import * as eyeAnimate from "../../../assets/effects/eye-animation.json";
 
-function SongItem({ id, data, index, newHideList, songLength }) {
+function SongItem({ id, data, index, newHideList }) {
 	const isHide = newHideList.includes(+id);
 
 	const [hide, setHide] = useState(isHide);
@@ -63,4 +63,4 @@ function SongItem({ id, data, index, newHideList, songLength }) {
 	);
 }
 
-export default SongItem;
+export default memo(SongItem);

@@ -12,29 +12,59 @@ import SongItem from "./SongItem";
 import { isIncludeString } from "../../../funcHandler";
 
 function Song() {
+	// Redux
 	const dispatch = useDispatch();
 	const { allSongs, hideList } = useSelector((state) => state.song);
 
+	// State
 	const [newHideList, setNewHideList] = useState([...hideList]);
 	const [keyword, setKeyword] = useState("");
-
-	// Filter the list by search keyword
-	const filteredSongs = useMemo(
-		() =>
-			allSongs.filter((song) => {
-				const songName = song.name;
-				return isIncludeString(songName, keyword);
-			}),
-		[allSongs, keyword]
-	);
+	const [page, setPage] = useState(1);
 
 	// Ref
 	const cancelBtnRef = useRef();
 	const applyBtnRef = useRef();
+	const loadMoreRef = useRef();
+	const sectionRef = useRef();
+
+	// Filter the list by search keyword
+	const filteredSongs = useMemo(() => {
+		setPage(1);
+		sectionRef?.current?.scrollTo({ behavior: "smooth", top: 0 });
+
+		const filter = allSongs.filter((song) => {
+			const songName = song.name;
+			return isIncludeString(songName, keyword);
+		});
+
+		return filter;
+	}, [allSongs, keyword]);
+
+	const songsOfPage = 10;
+	const currentList = useMemo(() => {
+		return filteredSongs.slice(0, page * songsOfPage);
+	}, [filteredSongs, page]);
 
 	useEffect(() => {
-		cancelBtnRef.current.goToAndStop(59, true);
-		applyBtnRef.current.goToAndStop(149, true);
+		// Set default status for cancel and apply button
+		cancelBtnRef.current.goToAndStop(14, true);
+		applyBtnRef.current.goToAndStop(14, true);
+
+		// Use intersectionObserve to follow inview state of loadmore element
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) {
+					setPage((prevPage) => prevPage + 1);
+				}
+			},
+			{ root: sectionRef.current, threshold: 0.9 }
+		);
+
+		observer.observe(loadMoreRef.current);
+
+		return () => {
+			observer.disconnect();
+		};
 	}, []);
 
 	const handleCancel = () => {
@@ -75,19 +105,15 @@ function Song() {
 				<Search newHideList={newHideList} setKeyword={setKeyword} />
 			</header>
 
-			<section className="relative grow flex flex-col text-[13px] overflow-y-auto border-y-[1px]">
+			<section
+				ref={sectionRef}
+				className="relative grow flex flex-col text-[13px] overflow-y-auto border-y-[1px]"
+			>
 				{/* Song List */}
-				{filteredSongs.length ? (
-					filteredSongs.map((song, index) => {
+				{currentList.length ? (
+					currentList.map((song, index) => {
 						return (
-							<SongItem
-								key={index}
-								id={song.id}
-								data={song}
-								index={index}
-								newHideList={newHideList}
-								songLength={allSongs.length}
-							/>
+							<SongItem key={index} id={song.id} data={song} index={index} newHideList={newHideList} />
 						);
 					})
 				) : (
@@ -96,16 +122,19 @@ function Song() {
 						<span className="font-[600] text-[#888]">Không tìm thấy bài hát nào :((</span>
 					</span>
 				)}
+
+				{/* Loadmore element */}
+				<div ref={loadMoreRef} className="h-[4px] shrink-0"></div>
 			</section>
 
 			<footer className="flex justify-center items-center] my-[-8px] pt-[8px]">
 				{/* Cancel btn */}
-				<button title="Hủy bỏ" className="w-[50px]" onClick={handleCancel}>
+				<button title="Hủy bỏ" className="w-[48px]" onClick={handleCancel}>
 					<Lottie lottieRef={cancelBtnRef} animationData={cancelAnimate} loop={false} autoplay={false} />
 				</button>
 
 				{/* Apply btn */}
-				<button title="Áp dụng" className="w-[50px] px-[6px] ml-[50px]" onClick={handleApply}>
+				<button title="Áp dụng" className="w-[48px] ml-[50px]" onClick={handleApply}>
 					<Lottie lottieRef={applyBtnRef} animationData={applyAnimate} loop={false} autoplay={false} />
 				</button>
 			</footer>
