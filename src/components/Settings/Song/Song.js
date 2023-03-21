@@ -20,6 +20,7 @@ function Song() {
 	const [newHideList, setNewHideList] = useState([...hideList]);
 	const [keyword, setKeyword] = useState("");
 	const [page, setPage] = useState(1);
+	const songsOfPage = 7;
 
 	// Ref
 	const cancelBtnRef = useRef();
@@ -40,7 +41,6 @@ function Song() {
 		return filter;
 	}, [allSongs, keyword]);
 
-	const songsOfPage = 10;
 	const currentList = useMemo(() => {
 		return filteredSongs.slice(0, page * songsOfPage);
 	}, [filteredSongs, page]);

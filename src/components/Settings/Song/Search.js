@@ -62,12 +62,12 @@ function Search({ setKeyword, newHideList }) {
 			/>
 			{/* Clear btn */}
 			{searchValue && (
-				<button
+				<span
 					className="shrink-0 flex justify-center items-center w-[25px] text-[15px] text-[#777] animate-fade-in"
 					onClick={handleClearInput}
 				>
 					<FontAwesomeIcon icon={faCircleXmark} />
-				</button>
+				</span>
 			)}
 		</form>
 	);

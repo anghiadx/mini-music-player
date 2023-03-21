@@ -12,7 +12,15 @@ function useModal(Modal) {
 	};
 
 	const ModalExport = () => {
-		return isShow && createPortal(<Modal closeModal={closeModal} />, document.body);
+		return (
+			isShow &&
+			createPortal(
+				<div className="fixed z-[999]">
+					<Modal closeModal={closeModal} />
+				</div>,
+				document.body
+			)
+		);
 	};
 
 	return [ModalExport, showModal];

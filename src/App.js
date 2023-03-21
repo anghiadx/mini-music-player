@@ -4,11 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { setAllSongs } from "./redux/slices/songSlice";
 import images from "./assets/images";
 import MusicControl from "./components/Musics/MusicControl";
-import MusicItem from "./components/Musics/MusicItem";
 import MusicTimeControl from "./components/Musics/MusicTimeControl";
 import MusicVolumeControl from "./components/Musics/MusicVolumeControl";
-import Lottie from "lottie-react";
-import * as loadingAnimate from "./assets/effects/loading-animation.json";
+import MusicList from "./components/Musics/MusicList";
 import configs from "./configs";
 import { useLocalStorage } from "./hooks";
 import MusicTimer from "./components/Musics/MusicTimer";
@@ -31,19 +29,19 @@ function App() {
 	const backgroundUrl = configs?.backgrounds[idBackground]?.url;
 
 	// Get current list
-	const currentList = useMemo(() => {
+	const filteredSongs = useMemo(() => {
 		if (hideList.length === 0) {
 			return allSongs;
 		}
-		const currentList = allSongs.filter((song) => {
+		const filteredSongs = allSongs.filter((song) => {
 			return !hideList.includes(+song.id);
 		});
 
-		return currentList;
+		return filteredSongs;
 	}, [hideList, allSongs]);
 
 	// Get current song and set path for audio
-	const currentSong = currentList[currentIndex];
+	const currentSong = filteredSongs[currentIndex];
 	useMemo(() => {
 		if (currentSong) {
 			audioRef.current.src = currentSong.path;
@@ -74,13 +72,13 @@ function App() {
 
 	return (
 		<div
-			className="flex justify-center min-[466px]:items-center min-h-screen max-h-screen bg-main-background bg-cover animate-bgMove transition-bg-image duration-700"
+			className="relative flex justify-center min-[466px]:items-center min-h-screen max-h-screen bg-main-background bg-cover animate-bgMove transition-bg-image duration-700"
 			style={{ backgroundImage: `url(${backgroundUrl})` }}
 		>
 			{/* <div className="fixed inset-0 overflow-hidden z-[9999] pointer-events-none">
 				<Lottie animationData={rainAnimate} />
 			</div> */}
-			<div className="flex flex-col w-[450px] mx-[4px] my-[8px]">
+			<div className="relative z-10 flex flex-col w-[450px] mx-[4px] my-[8px]">
 				<header className="shrink-0 relative p-[16px] min-[466px]:p-[24px] bg-[rgba(255,255,255,0.65)] rounded-[4px] min-[466px]:rounded-[8px] overflow-hidden">
 					<div
 						className="absolute inset-0 bg-cover bg-center opacity-[0.2] blur transition-bg-image duration-700"
@@ -101,7 +99,7 @@ function App() {
 						<MusicTimeControl audio={audioRef.current} currentSong={currentSong} />
 						{/* Play/Pause - Next - Previos */}
 						<MusicControl
-							songLength={currentList.length}
+							songLength={filteredSongs.length}
 							currentSong={currentSong}
 							audio={audioRef.current}
 							setIndex={setCurrentIndex}
@@ -123,30 +121,15 @@ function App() {
 					</div>
 
 					{/* Song list */}
-					<div className="grow relative min-[466px]:h-[320px] mt-[8px] mr-[-4px] overflow-y-auto">
-						{currentList.map((song, index) => {
-							return (
-								<MusicItem
-									key={index}
-									index={index}
-									currentIndex={currentIndex}
-									song={song}
-									handleClick={() => {
-										setCurrentIndex(index);
-									}}
-								/>
-							);
-						})}
-
-						{/* Show animation when loading */}
-						{!allSongs.length && (
-							<span className="absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] w-[124px] pointer-events-none">
-								<Lottie animationData={loadingAnimate} />
-							</span>
-						)}
-					</div>
+					<MusicList
+						filteredSongs={filteredSongs}
+						currentIndex={currentIndex}
+						setCurrentIndex={setCurrentIndex}
+					/>
 				</section>
 			</div>
+
+			<p className="auth">NghiaNe</p>
 		</div>
 	);
 }

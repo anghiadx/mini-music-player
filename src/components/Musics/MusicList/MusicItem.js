@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 import Lottie from "lottie-react";
 import { useSelector } from "react-redux";
 
-import * as waveAnimate from "../../assets/effects/song-wave.json";
-import * as cdAnimate from "../../assets/effects/cd-animation.json";
+import * as waveAnimate from "../../../assets/effects/song-wave.json";
+import * as cdAnimate from "../../../assets/effects/cd-animation.json";
 
 function MusicItem({ index, currentIndex, song, handleClick }) {
 	const { isPlaying } = useSelector((state) => state.audio);
@@ -25,7 +25,7 @@ function MusicItem({ index, currentIndex, song, handleClick }) {
 		<div
 			ref={itemRef}
 			className={`flex items-center relative p-[8px] mb-[12px] mr-[3px] bg-[rgba(255,255,255,0.4)] rounded-[4px] cursor-pointer 
-						overflow-hidden transition-colors duration-500 hover:bg-[rgba(255,255,255,0.8)]
+						overflow-hidden transition-colors duration-500 hover:bg-[rgba(255,255,255,0.8)] last:mb-0
 						${isActive && "bg-[rgba(255,255,255,0.8)]"}
 					`}
 			onClick={handleClick}
@@ -50,4 +50,4 @@ function MusicItem({ index, currentIndex, song, handleClick }) {
 	);
 }
 
-export default MusicItem;
+export default memo(MusicItem);
