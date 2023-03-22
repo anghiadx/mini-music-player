@@ -17,8 +17,9 @@ function App() {
 
 	// Redux
 	const dispatch = useDispatch();
-	const { allSongs, hideList } = useSelector((state) => state.song);
+	const { currentList } = useSelector((state) => state.playList);
 
+	// State
 	const [currentIndex, setCurrentIndex] = useState(0);
 
 	// Create audio element
@@ -28,20 +29,8 @@ function App() {
 	const { idActive: idBackground } = useSelector((state) => state.background);
 	const backgroundUrl = configs?.backgrounds[idBackground]?.url;
 
-	// Get current list
-	const filteredSongs = useMemo(() => {
-		if (hideList.length === 0) {
-			return allSongs;
-		}
-		const filteredSongs = allSongs.filter((song) => {
-			return !hideList.includes(+song.id);
-		});
-
-		return filteredSongs;
-	}, [hideList, allSongs]);
-
 	// Get current song and set path for audio
-	const currentSong = filteredSongs[currentIndex];
+	const currentSong = currentList[currentIndex];
 	useMemo(() => {
 		if (currentSong) {
 			audioRef.current.src = currentSong.path;
@@ -99,7 +88,7 @@ function App() {
 						<MusicTimeControl audio={audioRef.current} currentSong={currentSong} />
 						{/* Play/Pause - Next - Previos */}
 						<MusicControl
-							songLength={filteredSongs.length}
+							songLength={currentList.length}
 							currentSong={currentSong}
 							audio={audioRef.current}
 							setIndex={setCurrentIndex}
@@ -121,11 +110,7 @@ function App() {
 					</div>
 
 					{/* Song list */}
-					<MusicList
-						filteredSongs={filteredSongs}
-						currentIndex={currentIndex}
-						setCurrentIndex={setCurrentIndex}
-					/>
+					<MusicList currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} />
 				</section>
 			</div>
 

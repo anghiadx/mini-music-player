@@ -7,6 +7,7 @@ const { getStorage, setStorage } = useLocalStorage();
 const initialState = {
 	allSongs: [],
 	hideList: getStorage("hide-list") || [],
+	filteredSongs: [],
 };
 
 const songSlice = createSlice({
@@ -14,11 +15,23 @@ const songSlice = createSlice({
 	initialState,
 	reducers: {
 		setAllSongs: (state, action) => {
-			state.allSongs = action.payload;
+			const allSongs = action.payload;
+			state.allSongs = allSongs;
+
+			// filter list
+			state.filteredSongs = allSongs.filter((song) => {
+				return !state.hideList.includes(+song.id);
+			});
 		},
 		setHideList: (state, action) => {
-			state.hideList = action.payload;
-			setStorage("hide-list", action.payload);
+			const hideList = action.payload;
+			state.hideList = hideList;
+			setStorage("hide-list", hideList);
+
+			// filter list
+			state.filteredSongs = state.allSongs.filter((song) => {
+				return !hideList.includes(+song.id);
+			});
 		},
 	},
 });

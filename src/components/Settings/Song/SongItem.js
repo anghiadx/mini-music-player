@@ -18,25 +18,30 @@ function SongItem({ id, data, index, newHideList }) {
 	useEffect(() => {
 		if (hide) {
 			!isHide && newHideList.push(+id);
-
-			iconRef.current.setDirection(-1);
-			iconRef.current.play();
 		} else {
 			if (isHide) {
 				const index = newHideList.findIndex((idHide) => idHide === +id);
 				newHideList.splice(index, 1);
 			}
-
-			iconRef.current.setDirection(1);
-			iconRef.current.goToAndPlay(0, true);
 		}
 	}, [id, isHide, hide, newHideList]);
 
 	useEffect(() => {
 		iconRef.current.setSpeed(4.5);
+		const frame = hide ? 1 : 59;
+		iconRef.current.goToAndStop(frame, true);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleToggleHide = () => {
+		if (hide) {
+			iconRef.current.setDirection(1);
+			iconRef.current.goToAndPlay(0, true);
+		} else {
+			iconRef.current.setDirection(-1);
+			iconRef.current.play();
+		}
+
 		setHide(!hide);
 	};
 
@@ -47,7 +52,7 @@ function SongItem({ id, data, index, newHideList }) {
 			onClick={handleToggleHide}
 		>
 			<div className="shrink-0 w-[30px] text-center">
-				<Lottie lottieRef={iconRef} animationData={eyeAnimate} loop={false} autoPlay={false} />
+				<Lottie lottieRef={iconRef} animationData={eyeAnimate} loop={false} autoplay={false} />
 			</div>
 			<div className="shrink-0 w-[50px] text-center">{index + 1}</div>
 			<div className="shrink-0 flex justify-center items-center w-[50px] h-[50px]">

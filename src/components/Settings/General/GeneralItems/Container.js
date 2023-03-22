@@ -12,7 +12,7 @@ function Container({ children, title, switchState }) {
 	const idSwitch = useMemo(generateId, []);
 
 	return (
-		<div className="p-[8px] pt-0 mb-[24px] rounded-[4px] shadow-style-2">
+		<div className="p-[8px] pt-0 mb-[24px] rounded-[4px] shadow-style-3">
 			<header className="flex justify-between py-[6px] border-b-[1px]">
 				<h1 className="text-[16px] font-bold">{title}</h1>
 				<button>

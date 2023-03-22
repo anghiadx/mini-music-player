@@ -20,7 +20,7 @@ function Song() {
 	const [newHideList, setNewHideList] = useState([...hideList]);
 	const [keyword, setKeyword] = useState("");
 	const [page, setPage] = useState(1);
-	const songsOfPage = 7;
+	const songsOfPage = 10;
 
 	// Ref
 	const cancelBtnRef = useRef();
