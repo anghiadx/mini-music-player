@@ -69,6 +69,7 @@ function Song() {
 
 	const handleCancel = () => {
 		setNewHideList([...hideList]);
+		setKeyword("");
 		cancelBtnRef.current.goToAndPlay(0, true);
 
 		// Show toast

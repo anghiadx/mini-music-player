@@ -44,7 +44,7 @@ function App() {
 	useEffect(() => {
 		const fetchSongs = async () => {
 			try {
-				const response = await (await fetch("https://api.nghiane.online/music-player/view/")).json();
+				const response = await (await fetch("https://api.nghiane.online/music/songs/")).json();
 
 				// Random list or not
 				const isRandomList = getStorage("is-random-list") === false ? false : true;

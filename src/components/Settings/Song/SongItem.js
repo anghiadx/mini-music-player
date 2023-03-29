@@ -28,10 +28,14 @@ function SongItem({ id, data, index, newHideList }) {
 
 	useEffect(() => {
 		iconRef.current.setSpeed(4.5);
-		const frame = hide ? 1 : 59;
-		iconRef.current.goToAndStop(frame, true);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		const frame = isHide ? 1 : 59;
+		iconRef.current.goToAndStop(frame, true);
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [newHideList]);
 
 	const handleToggleHide = () => {
 		if (hide) {
