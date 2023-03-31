@@ -63,7 +63,7 @@ function Search({ setKeyword, newHideList }) {
 			{/* Clear btn */}
 			{searchValue && (
 				<span
-					className="shrink-0 flex justify-center items-center w-[25px] text-[15px] text-[#777] animate-fade-in"
+					className="shrink-0 flex justify-center items-center w-[25px] text-[15px] text-[#777] animate-fade-in cursor-pointer"
 					onClick={handleClearInput}
 				>
 					<FontAwesomeIcon icon={faCircleXmark} />

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import Lottie from "lottie-react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -9,18 +9,22 @@ import * as cancelAnimate from "../../../assets/effects/cancel-animation.json";
 import * as catAnimate from "../../../assets/effects/cat-animation.json";
 import Search from "./Search";
 import SongItem from "./SongItem";
-import { isIncludeString } from "../../../funcHandler";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 function Song() {
 	// Redux
 	const dispatch = useDispatch();
-	const { allSongs, hideList } = useSelector((state) => state.song);
+	const { hideList } = useSelector((state) => state.song);
 
 	// State
+	const [songs, setSongs] = useState([]);
+	const [songIds, setSongIds] = useState([]);
 	const [newHideList, setNewHideList] = useState([...hideList]);
 	const [keyword, setKeyword] = useState("");
-	const [page, setPage] = useState(1);
-	const songsOfPage = 10;
+	const [page, setPage] = useState(0);
+	const songOfPage = 10;
+	const [loading, setLoading] = useState(false);
 
 	// Ref
 	const cancelBtnRef = useRef();
@@ -28,28 +32,35 @@ function Song() {
 	const loadMoreRef = useRef();
 	const sectionRef = useRef();
 
-	// Filter the list by search keyword
-	const filteredSongs = useMemo(() => {
-		setPage(1);
-		sectionRef?.current?.scrollTo({ behavior: "smooth", top: 0 });
-
-		const filter = allSongs.filter((song) => {
-			const songName = song.name;
-			return isIncludeString(songName, keyword);
-		});
-
-		return filter;
-	}, [allSongs, keyword]);
-
-	const currentList = useMemo(() => {
-		return filteredSongs.slice(0, page * songsOfPage);
-	}, [filteredSongs, page]);
-
 	useEffect(() => {
 		// Set default status for cancel and apply button
 		cancelBtnRef.current.goToAndStop(14, true);
 		applyBtnRef.current.goToAndStop(14, true);
+	}, []);
 
+	// Get ids array
+	useEffect(() => {
+		const fetchSongIds = async function () {
+			const url = "https://api.nghiane.online/music/songs/";
+			const response = await (await fetch(url)).json();
+
+			const ids = response.data.map((song) => +song.id);
+
+			setSongIds(ids);
+		};
+
+		fetchSongIds();
+	}, []);
+
+	// Reset page and songs when keyword is changed
+	useEffect(() => {
+		setPage(0);
+		setSongs([]);
+		setLoading(true);
+	}, [keyword]);
+
+	// Every time the keyword changes, re-track the loadmore element to update the page in the most accurate way
+	useEffect(() => {
 		// Use intersectionObserve to follow inview state of loadmore element
 		const observer = new IntersectionObserver(
 			(entries) => {
@@ -65,7 +76,24 @@ function Song() {
 		return () => {
 			observer.disconnect();
 		};
-	}, []);
+	}, [keyword]);
+
+	// When the page changes, call the api to get the songs on the corresponding page and append to the old array
+	useEffect(() => {
+		const fetchSongs = async function () {
+			const url = `https://api.nghiane.online/music/search/?q=${keyword}&per_page=${songOfPage}&page=${page}`;
+			const response = await (await fetch(url)).json();
+
+			if (response.data.length > 0) {
+				setSongs((prevSongs) => prevSongs.concat(response.data));
+			}
+
+			setLoading(false);
+		};
+
+		page !== 0 && fetchSongs();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [page]);
 
 	const handleCancel = () => {
 		setNewHideList([...hideList]);
@@ -78,7 +106,9 @@ function Song() {
 
 	const handleApply = () => {
 		// Check if current playlist is less than 2 then don't hide and show notifications
-		const songIds = allSongs.map((song) => +song.id);
+		if (songIds.length === 0) {
+			return;
+		}
 
 		const totalHideIds = newHideList.filter((hideId) => {
 			return songIds.includes(hideId);
@@ -111,21 +141,29 @@ function Song() {
 				className="relative grow flex flex-col text-[13px] overflow-y-auto border-y-[1px]"
 			>
 				{/* Song List */}
-				{currentList.length ? (
-					currentList.map((song, index) => {
+				{songs.length ? (
+					songs.map((song, index) => {
 						return (
 							<SongItem key={index} id={song.id} data={song} index={index} newHideList={newHideList} />
 						);
 					})
 				) : (
 					<span className="absolute top-1/2 left-1/2 w-full translate-x-[-50%] translate-y-[-50%] text-center animate-fade-in">
-						<Lottie className="max-w-[230px] mt-[-16px] mx-auto" animationData={catAnimate} />
-						<span className="font-[600] text-[#888]">Không tìm thấy bài hát nào :((</span>
+						{loading ? (
+							<span className="inline-block leading-[0] text-[18px] animate-spin">
+								<FontAwesomeIcon icon={faCircleNotch} />
+							</span>
+						) : (
+							<>
+								<Lottie className="max-w-[230px] mt-[-16px] mx-auto" animationData={catAnimate} />
+								<span className="font-[600] text-[#888]">Không có bài hát nào :((</span>
+							</>
+						)}
 					</span>
 				)}
 
 				{/* Loadmore element */}
-				<div ref={loadMoreRef} className="h-[4px] shrink-0"></div>
+				<div ref={loadMoreRef} className="shrink-0 h-[4px]"></div>
 			</section>
 
 			<footer className="flex justify-center items-center] my-[-8px] pt-[8px]">

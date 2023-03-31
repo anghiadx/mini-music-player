@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
-import { setAllSongs } from "./redux/slices/songSlice";
+import { useSelector } from "react-redux";
 import images from "./assets/images";
 import MusicControl from "./components/Musics/MusicControl";
 import MusicTimeControl from "./components/Musics/MusicTimeControl";
@@ -15,22 +13,36 @@ function App() {
 	// Get local storage method
 	const { getStorage } = useLocalStorage();
 
-	// Redux
-	const dispatch = useDispatch();
-	const { currentList } = useSelector((state) => state.playList);
-
 	// State
+	const [songs, setSongs] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
+	const [listId] = useState(0);
+	const [page, setPage] = useState(0);
+
+	// Redux
+	const { hideList } = useSelector((state) => state.song);
+	const { idActive: idBackground } = useSelector((state) => state.background);
+
+	// Play List
+	const playList = configs.playList;
+	const currentList = playList[listId];
+	const songOfPage = 15;
 
 	// Create audio element
 	const audioRef = useRef(new Audio());
 
 	// Get background from redux
-	const { idActive: idBackground } = useSelector((state) => state.background);
 	const backgroundUrl = configs?.backgrounds[idBackground]?.url;
 
+	// Filter hidden songs
+	const songFiltered = useMemo(() => {
+		const songFiltered = songs.filter((song) => !hideList.includes(+song.id));
+		return songFiltered;
+	}, [songs, hideList]);
+
 	// Get current song and set path for audio
-	const currentSong = currentList[currentIndex];
+	const currentSong = songFiltered[currentIndex];
+
 	useMemo(() => {
 		if (currentSong) {
 			audioRef.current.src = currentSong.path;
@@ -40,24 +52,43 @@ function App() {
 		}
 	}, [currentSong]);
 
-	// Call api to get all songs
+	// Call api to get songs
 	useEffect(() => {
 		const fetchSongs = async () => {
 			try {
-				const response = await (await fetch("https://api.nghiane.online/music/songs/")).json();
+				let url = "";
+				if (currentList.data === "full") {
+					url = `https://api.nghiane.online/music/songs/?per_page=${songOfPage}&page=${page}`;
+				} else {
+					const ids = currentList.data.join(",");
+					url = `https://api.nghiane.online/music/songs/?ids=${ids}&per_page=${songOfPage}&page=${page}`;
+				}
+
+				const response = await (await fetch(url)).json();
+
+				// If data is empty => return
+				if (response.data.length === 0) {
+					return;
+				}
 
 				// Random list or not
 				const isRandomList = getStorage("is-random-list") === false ? false : true;
 				const result = isRandomList ? response.data.sort(() => Math.random() - 0.5) : response.data;
 
-				dispatch(setAllSongs(result));
+				setSongs((prevSongs) => prevSongs.concat(result));
 			} catch (e) {
 				console.log("Failed to fetch: ", e);
 			}
 		};
-		fetchSongs();
+		page !== 0 && fetchSongs();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [page]);
+
+	// Reset list when playList change
+	useEffect(() => {
+		setSongs([]);
+		setPage(0);
+	}, [listId]);
 
 	return (
 		<div
@@ -88,7 +119,7 @@ function App() {
 						<MusicTimeControl audio={audioRef.current} currentSong={currentSong} />
 						{/* Play/Pause - Next - Previos */}
 						<MusicControl
-							songLength={currentList.length}
+							songLength={songFiltered.length}
 							currentSong={currentSong}
 							audio={audioRef.current}
 							setIndex={setCurrentIndex}
@@ -105,12 +136,17 @@ function App() {
 					></div>
 
 					<div className="shrink-0 relative flex justify-between h-[25px] overflow-hidden">
-						<h3 className="font-bold text-[15px] italic">Play list</h3>
+						<h3 className="font-bold text-[15px] italic">{currentList.name}</h3>
 						<MusicTimer />
 					</div>
 
 					{/* Song list */}
-					<MusicList currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} />
+					<MusicList
+						data={songFiltered}
+						currentIndex={currentIndex}
+						setCurrentIndex={setCurrentIndex}
+						setPage={setPage}
+					/>
 				</section>
 			</div>
 
