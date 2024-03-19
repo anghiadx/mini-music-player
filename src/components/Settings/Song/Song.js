@@ -11,6 +11,7 @@ import Search from "./Search";
 import SongItem from "./SongItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import configs from "../../../configs";
 
 function Song() {
 	// Redux
@@ -41,7 +42,7 @@ function Song() {
 	// Get ids array
 	useEffect(() => {
 		const fetchSongIds = async function () {
-			const url = "https://api.nghiane.online/music/songs/";
+			const url = configs.apiBaseUrl + "songs/";
 			const response = await (await fetch(url)).json();
 
 			const ids = response.data.map((song) => +song.id);
@@ -81,7 +82,7 @@ function Song() {
 	// When the page changes, call the api to get the songs on the corresponding page and append to the old array
 	useEffect(() => {
 		const fetchSongs = async function () {
-			const url = `https://api.nghiane.online/music/search/?q=${keyword}&per_page=${songOfPage}&page=${page}`;
+			const url = configs.apiBaseUrl + `search/?q=${keyword}&per_page=${songOfPage}&page=${page}`;
 			const response = await (await fetch(url)).json();
 
 			if (response.data.length > 0) {

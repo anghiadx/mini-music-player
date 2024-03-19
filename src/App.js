@@ -58,10 +58,10 @@ function App() {
 			try {
 				let url = "";
 				if (currentList.data === "full") {
-					url = `https://api.nghiane.online/music/songs/?per_page=${songOfPage}&page=${page}`;
+					url = configs.apiBaseUrl + `songs/?per_page=${songOfPage}&page=${page}`;
 				} else {
 					const ids = currentList.data.join(",");
-					url = `https://api.nghiane.online/music/songs/?ids=${ids}&per_page=${songOfPage}&page=${page}`;
+					url = configs.apiBaseUrl + `songs/?ids=${ids}&per_page=${songOfPage}&page=${page}`;
 				}
 
 				const response = await (await fetch(url)).json();
